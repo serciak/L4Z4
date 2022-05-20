@@ -29,19 +29,20 @@ public class ArrayStack<T> implements StackInterface<T> {
     @Override
     public T pop() throws EmptyStackException {
         if(isEmpty()) throw new EmptyStackException();
+        T temp = array[--topIndex];
         if(Math.floorDiv(size, 4) >= topIndex) {
             decreaseStackSize();
         }
-        return array[topIndex--];
+        return temp;
     }
 
     @Override
     public void push(T elem) throws FullStackException {
         if(isFull()) throw new FullStackException();
+        array[topIndex++] = elem;
         if(Math.floorDiv(size, 4)*3 <= topIndex) {
             increaseStackSize();
         }
-        array[topIndex++] = elem;
     }
 
     @Override
@@ -58,18 +59,22 @@ public class ArrayStack<T> implements StackInterface<T> {
     private void increaseStackSize() {
         size *= 2;
         T[] newArray = (T[]) new Object[size];
-        for(int i = 0; i< topIndex-1; i++) {
+        for(int i = 0; i< topIndex; i++) {
             newArray[i] = array[i];
         }
         array = newArray;
     }
 
     private void decreaseStackSize() {
-        size = Math.floorDiv(size, 2);
-        T[] newArray = (T[]) new Object[size];
-        for(int i = 0; i < topIndex-1; i++) {
-            newArray[i] = array[i];
+        if (!(size <= 1)) {
+            size = Math.floorDiv(size, 2);
+            T[] newArray = (T[]) new Object[size];
+            for (int i = 0; i < topIndex; i++) {
+                newArray[i] = array[i];
+            }
+            array = newArray;
         }
-        array = newArray;
     }
+
+    public int capacity() { return size; }
 }
